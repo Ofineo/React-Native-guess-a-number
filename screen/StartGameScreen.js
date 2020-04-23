@@ -14,8 +14,8 @@ const StartGameScreen = props => {
                 </Text>
                 <TextInput />
                 <View style={styles.buttonContainer}>
-                    <Button title="ACCEPT" onPress={() => { }} />
                     <Button title="CANCEL" />
+                    <Button title="ACCEPT" onPress={() => { }} />
                 </View>
 
             </View>
@@ -39,7 +39,14 @@ const styles = StyleSheet.create({
         width: 300,
         maxWidth: '80%',
         alignItems: 'center',
-        
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.26,
+        shadowRadius: 6,
+        elevation: 5,
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10
     },
     buttonContainer: {
         flexDirection: 'row',
