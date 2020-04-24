@@ -34,6 +34,9 @@ const StartGameScreen = props => {
 
     const startGame = () => {
         setConfirmed(false);
+        props.onStartGame(selectedNumberState);
+
+
     }
 
     return (
