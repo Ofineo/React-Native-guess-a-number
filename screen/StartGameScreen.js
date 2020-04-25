@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, Button, TouchableWithoutFeedback, Keyboard, Alert, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Button, TouchableWithoutFeedback, Keyboard, Alert, Modal, ScrollView, KeyboardAvoidingView, Dimensions } from 'react-native';
 import Card from '../components/Card';
 import color from '../constants/color';
 import Input from '../components/Input';
 import NumberContainer from '../components/NumberContainer';
+import BodyText from '../components/BodyText';
+import MainButton from '../components/MainButton';
 
 const StartGameScreen = props => {
 
     const [inputState, setInputState] = useState('');
     const [selectedNumberState, setSelectedNumberState] = useState();
     const [confirmed, setConfirmed] = useState(false);
+    const [buttonWidth, setButtonWidth] = useState(Dimensions.get('window').width / 4)
+
+    useEffect(() => {
+        const updateLayout = () => {
+            setButtonWidth(Dimensions.get('window').width / 4);
+        };
+        Dimensions.addEventListener('change', updateLayout);
+        return () => {
+            Dimensions.removeEventListener('change', updateLayout);
+        };
+    });
 
     const inputValidation = (text) => {
         setInputState(text.replace(/[^0-9]/g, ''));
@@ -40,49 +53,50 @@ const StartGameScreen = props => {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={styles.screen}>
-                <Text style={styles.title}>
-                    Start a new game
-            </Text>
-                <Card style={styles.inputContainer}>
-                    <Text>
-                        Select a number
-                </Text>
-                    <Input
-                        style={styles.input}
-                        blurOnSubmit
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="number-pad"
-                        maxLength={2}
-                        onChangeText={inputValidation}
-                        value={inputState}
-                    />
-                    <View style={styles.buttonContainer}>
-                        <View style={width = 20}>
-                            <Button title="CANCEL" color={color.accent} onPress={resetInputHandler} />
-                        </View>
-                        <View style={width = 20}>
-                            <Button title="ACCEPT" color={color.primary} onPress={confirmInputHandler} />
-                        </View>
-                    </View>
+        <ScrollView>
+            <KeyboardAvoidingView behaviour="position" keyboardVerticalOffset="30">
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                    <View style={styles.screen}>
+                        <Text style={styles.title}>Start a new game </Text>
+                        <Card style={styles.inputContainer}>
+                            <BodyText>Select a number</BodyText>
+                            <Input
+                                style={styles.input}
+                                blurOnSubmit
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="number-pad"
+                                maxLength={2}
+                                onChangeText={inputValidation}
+                                value={inputState}
+                            />
+                            <View style={styles.buttonContainer}>
+                                <View style={{ width: buttonWidth }}>
+                                    <Button title="CANCEL" color={color.accent} onPress={resetInputHandler} />
+                                </View>
+                                <View style={{ width: buttonWidth }}>
+                                    <Button title="ACCEPT" color={color.primary} onPress={confirmInputHandler} />
+                                </View>
+                            </View>
+                        </Card>
 
-                </Card>
-
-                <Modal visible={confirmed} animationType='slide'>
-                    <View style={styles.modal}>
-                        <Text>You selected :</Text>
-                        <NumberContainer>
-                            {selectedNumberState}
-                        </NumberContainer>
-                        <View style={width = 50}>
-                            <Button title="CONFIRM" onPress={startGame} />
-                        </View>
+                        <Modal visible={confirmed} animationType='slide'>
+                            <View style={styles.modal}>
+                                <BodyText>You selected :</BodyText>
+                                <NumberContainer>
+                                    {selectedNumberState}
+                                </NumberContainer>
+                                <MainButton onPress={startGame}>
+                                    START GAME
+                        </MainButton>
+                            </View>
+                        </Modal>
                     </View>
-                </Modal>
-            </View>
-        </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+
+        </ScrollView>
+
 
     );
 };
@@ -96,11 +110,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         marginVertical: 10,
+        fontFamily: 'open-sans-bold'
 
     },
     inputContainer: {
-        width: 300,
-        maxWidth: '80%',
+        minWidth: 300,
+        maxWidth: '95%',
+        width: '80%',
         alignItems: 'center',
     },
     buttonContainer: {
@@ -110,7 +126,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     input: {
-        width: 100,
+        width: 50,
         textAlign: 'center'
     },
     modal: {
